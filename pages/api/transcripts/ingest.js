@@ -11,8 +11,8 @@ export default async function handler(req,res){
   if(!blobToken)return res.status(500).send('blob token missing');
   const id=String(body.ticketId); const token=randToken(48); const blobKey=`transcripts/${id}_${token}.json`;
   try{
-    await put(blobKey, JSON.stringify(body), { access:'private', contentType:'application/json; charset=utf-8', token: blobToken });
-  }catch(e){ console.error('Blob put failed:', e); return res.status(500).send('blob put failed: '+(e?.message||'unknown')); }
+    await put(blobKey,JSON.stringify(body),{access:'public',contentType:'application/json; charset=utf-8',token:blobToken});
+  }catch(e){ console.error('Blob put failed:',e); return res.status(500).send('blob put failed: '+(e?.message||'unknown')); }
   const base=(process.env.PUBLIC_BASE_URL||`${req.headers['x-forwarded-proto']||'https'}://${req.headers.host}`).replace(/\/+$/,'');
   const viewUrl=`${base}/t/${encodeURIComponent(id)}?token=${encodeURIComponent(token)}`;
   res.status(200).json({ id, viewUrl });
